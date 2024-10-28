@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "557663290683",
+    "project_id": "farm-records-management-74073",
+    "storage_bucket": "farm-records-management-74073.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557663290683:android:73a637c61d3190ae74e31e",
+        "android_client_info": {
+          "package_name": "com.example.farm_records_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtPaWL6v4KOR0Nw8cZGzc3uImdnbzPLzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
