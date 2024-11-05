@@ -49,7 +49,6 @@ Future<void> _loginWithEmailAndPassword() async {
   }
 }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
