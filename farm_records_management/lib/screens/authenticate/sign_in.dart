@@ -5,48 +5,56 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
-Future<void> _signUpWithEmail() async {
-  if (_formKey.currentState?.validate() ?? false) {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+class _SignInPageState extends State<SignInPage> {
+  final AuthService _auth = AuthService();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  var logger = Logger();
 
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _signUpWithEmail() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      String email = _emailController.text.trim();
+      String password = _passwordController.text.trim();
 
-    try {
-      User? user = await _auth.signUpWithEmailAndPassword(email, password);
-      if (user != null) {
-        if (mounted) {
-          logger.i('Sign up successful');
-          Navigator.pushReplacementNamed(context, '/crops');
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        User? user = await _auth.signUpWithEmailAndPassword(email, password);
+        if (user != null) {
+          if (mounted) {
+            logger.i('Sign up successful');
+            Navigator.pushReplacementNamed(context, '/crops');
+          }
+        } else {
+          if (mounted) {
+            logger.w('Error during sign-up');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sign-up failed')),
+            );
+          }
         }
-      } else {
+      } catch (e) {
         if (mounted) {
-          logger.w('Error during sign-up');
+          logger.e('Error during sign-up: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign-up failed')),
+            SnackBar(content: Text('Error during sign-up: $e')),
           );
         }
-      }
-    } catch (e) {
-      if (mounted) {
-        logger.e('Error during sign-up: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error during sign-up: $e')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
-}
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sign Up')),
