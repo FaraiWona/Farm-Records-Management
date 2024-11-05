@@ -10,44 +10,52 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-Future<void> _loginWithEmailAndPassword() async {
-  if (_formKey.currentState?.validate() ?? false) {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+class _LoginPageState extends State<LoginPage> {
+  final AuthService _auth = AuthService();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  var logger = Logger();
 
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loginWithEmailAndPassword() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      String email = _emailController.text.trim();
+      String password = _passwordController.text.trim();
 
-    try {
-      User? user = await _auth.signInWithEmailAndPassword(email, password);
-      if (mounted) {
-        if (user != null) {
-          logger.i('Login successful');
-          Navigator.pushReplacementNamed(context, '/crops');
-        } else {
-          logger.w('Error during sign-in');
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        User? user = await _auth.signInWithEmailAndPassword(email, password);
+        if (mounted) {
+          if (user != null) {
+            logger.i('Login successful');
+            Navigator.pushReplacementNamed(context, '/crops');
+          } else {
+            logger.w('Error during sign-in');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Invalid email or password')),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          logger.e('Error during login: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email or password')),
+            SnackBar(content: Text('Error during login: $e')),
           );
         }
-      }
-    } catch (e) {
-      if (mounted) {
-        logger.e('Error during login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error during login: $e')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
